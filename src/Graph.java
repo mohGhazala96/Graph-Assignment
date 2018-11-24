@@ -1,5 +1,7 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Vector;
 
 public class Graph {
 
@@ -40,5 +42,16 @@ public class Graph {
 		Edge edge= new Edge(new StringBuffer(strEdgeUniqueID) , new StringBuffer(strEdgeData),nEdgeCost, vertexA,vertexB);
 		edges.put(strEdgeUniqueID, edge);
 		
+	}
+	
+	public Vector<Edge> incidentEdges(String strVertexUniqueID)
+			throws GraphException {
+		Vertex vertex = vertices.get(strVertexUniqueID);
+		
+		if (vertex == null) {
+			throw new GraphException("Vertex doesn't exist dude...");
+		}
+		
+		return new Vector<Edge>(vertex._edges);
 	}
 }

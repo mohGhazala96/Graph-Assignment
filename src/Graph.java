@@ -61,4 +61,10 @@ public class Graph {
 		
 		return new Vector<Vertex>(verSet);
 	}
+	
+	public Vector<Edge> edges() throws GraphException {
+		Set edgSet = this.edges.entrySet();
+		
+		return new Vector<Edge>(edgSet);
+	}
 }

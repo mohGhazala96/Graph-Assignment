@@ -98,4 +98,10 @@ public class Graph {
 	public Vertex[]endVertices(String strEdgeUniqueID) throws GraphException{
 		return edges.get(strEdgeUniqueID).get_vertices();
 	}
+	
+	public Vertex opposite(String strVertexUniqueID, String strEdgeUniqueID) throws GraphException{
+		Edge current = edges.get(strEdgeUniqueID);
+		return current.getConnectedVertex(vertices.get(strVertexUniqueID));
+		
+	}
 }

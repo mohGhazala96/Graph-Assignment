@@ -1,8 +1,10 @@
+import java.util.LinkedList;
 
 public class Vertex {
 
 	protected StringBuffer _strUniqueID, _strData;
 	protected int _nX, _nY;
+	protected LinkedList<Edge> _edges;
 
 	// a unique id identifying vertex
 	// data associated with vertex

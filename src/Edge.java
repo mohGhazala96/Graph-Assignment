@@ -52,4 +52,9 @@ public class Edge {
 	public int getCost() {
 		return _nEdgeCost;
 	}
+	protected void removeEdge() {
+		this._vertices[0]._edges.remove(this);
+		this._vertices[1]._edges.remove(this);
+
+	}
 }

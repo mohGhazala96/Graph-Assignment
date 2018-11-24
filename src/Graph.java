@@ -1,5 +1,8 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
+import java.util.Vector;
 
 public class Graph {
 
@@ -8,6 +11,24 @@ public class Graph {
 
 	public Graph() {
 		super();
+		
+		this.vertices = new HashMap<String, Vertex>();
+	}
+	
+	
+	public void insertVertex(String strUniqueID,
+			String strData,
+			int
+			nX,
+			int
+			nY) throws GraphException {
+		if (vertices.containsKey(strUniqueID)) {
+			throw new GraphException("ID already exists .. and it's called unique you idiot");
+		}
+
+		Vertex vertex = new Vertex(new StringBuffer(strUniqueID), new StringBuffer(strData), nX, nY);
+		
+		vertices.put(strUniqueID, vertex);
 	}
 
 	// inserts an edge between 2 specified vertices
@@ -32,5 +53,22 @@ public class Graph {
 		}
 		edges.get(strEdgeUniqueID).removeEdge();
 		edges.remove(strEdgeUniqueID);
+	}
+	
+	public Vector<Edge> incidentEdges(String strVertexUniqueID)
+			throws GraphException {
+		Vertex vertex = vertices.get(strVertexUniqueID);
+		
+		if (vertex == null) {
+			throw new GraphException("Vertex doesn't exist dude...");
+		}
+		
+		return new Vector<Edge>(vertex._edges);
+	}
+	
+	public Vector<Vertex> vertices() throws GraphException {
+		Set verSet = this.vertices.entrySet();
+		
+		return new Vector<Vertex>(verSet);
 	}
 }

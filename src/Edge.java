@@ -49,6 +49,10 @@ public class Edge {
 		return _strData;
 	}
 
+	public Vertex[] get_vertices() {
+		return _vertices;
+	}
+
 	public int getCost() {
 		return _nEdgeCost;
 	}

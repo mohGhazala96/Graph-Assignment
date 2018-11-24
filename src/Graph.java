@@ -95,4 +95,7 @@ public class Graph {
 		}
 		vertices.remove(strVertexUniqueID);
 	}
+	public Vertex[]endVertices(String strEdgeUniqueID) throws GraphException{
+		return edges.get(strEdgeUniqueID).get_vertices();
+	}
 }

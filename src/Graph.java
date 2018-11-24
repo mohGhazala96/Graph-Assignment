@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Set;
 import java.util.Vector;
 
 public class Graph {
@@ -53,5 +54,11 @@ public class Graph {
 		}
 		
 		return new Vector<Edge>(vertex._edges);
+	}
+	
+	public Vector<Vertex> vertices() throws GraphException {
+		Set verSet = this.vertices.entrySet();
+		
+		return new Vector<Vertex>(verSet);
 	}
 }

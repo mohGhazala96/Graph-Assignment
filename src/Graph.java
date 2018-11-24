@@ -10,8 +10,9 @@ public class Graph implements Visitor {
 
 	private HashMap<String, Vertex> vertices;
 	private HashMap<String, Edge> edges;
-	HashMap<String, Boolean> visitedEdges;
-	HashMap<String, Boolean> visitedVertices;
+	
+	private ArrayList<Edge> visitedEdges; //stores all visited edges per search in the array list
+	private ArrayList<Vertex> visitedVertices; //stores all visited vertices per search in the array list
 
 	public Graph() {
 		super();
@@ -103,21 +104,21 @@ public class Graph implements Visitor {
 		return current.getConnectedVertex(vertices.get(strVertexUniqueID));
 
 	}
-	public  void visit(Vertex v) {
-		visitedVertices.put(v._strUniqueID.toString(), true);
+	public  void visit(Vertex v) { // store visited vertex
+		visitedVertices.add(v);
 
 	}
-	public  void visit(Edge e) {
-		visitedEdges.put(e._strUniqueID.toString(), true);
-
+	public  void visit(Edge e) { // store visited edge
+		visitedEdges.add(e);
 	}
 
 	public void bfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException
 
 	{
 
-		visitedEdges = new HashMap<String, Boolean>();
-		visitedVertices = new HashMap<String, Boolean>();
+		//empty the stored edges and vertices from previous searches
+		visitedEdges = new ArrayList<Edge>();
+		visitedVertices = new ArrayList<Vertex>();
 		
 		LinkedList<Vertex> queue = new LinkedList<Vertex>();
 		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
@@ -132,12 +133,15 @@ public class Graph implements Visitor {
 			
 			while (edgesOfVertex.hasNext()) {
 				Edge currentEdge = edgesOfVertex.next();
-				this.visit(currentEdge);
+				
+				if (!visitedEdges.contains(currentEdge)) 
+					this.visit(currentEdge);
+				
 				Vertex nextVertex =currentEdge.get_vertices()[1];
-				if (!visitedVertices.get(nextVertex._strUniqueID.toString())) {
-					this.visit(nextVertex);
-					queue.add(nextVertex);
-				}
+				if (!visitedVertices.contains(nextVertex)) {
+						this.visit(nextVertex);
+						queue.add(nextVertex);
+					}
 			}
 		}
 

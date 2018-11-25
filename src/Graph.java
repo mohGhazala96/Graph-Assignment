@@ -4,6 +4,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Set;
+import java.util.Stack;
 import java.util.Vector;
 
 public class Graph implements Visitor {
@@ -145,5 +146,55 @@ public class Graph implements Visitor {
 			}
 		}
 
+	}
+	
+	public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException{
+		
+		visitedEdges = new ArrayList<Edge>();
+		visitedVertices = new ArrayList<Vertex>();
+		
+		Stack stack = new Stack();
+		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
+
+		this.visit(originalVertex);
+		stack.push(originalVertex);
+		
+		while(!stack.isEmpty()){
+			
+			boolean noMore = false;
+			
+			while(!noMore){
+				
+				if(!((Vertex)stack.peek())._edges.isEmpty()){
+					LinkedList<Edge> edgesOfVertex = ((Vertex)stack.peek())._edges;	
+					Edge currentEdge = edgesOfVertex.getFirst();
+				
+					for(int i = 0;i<edgesOfVertex.size();i++){
+						if (!visitedEdges.contains(currentEdge)){
+							this.visit(currentEdge);
+							break;
+						}
+						
+						else{
+							currentEdge = edgesOfVertex.get(i);
+						}
+					}
+				
+					Vertex nextVertex =currentEdge.get_vertices()[1];
+					if (!visitedVertices.contains(nextVertex)) {
+							this.visit(nextVertex);
+							stack.push(nextVertex);
+					}
+					else{
+						noMore = true;
+						stack.pop();
+					}
+				}
+				else{
+					noMore = true;
+					stack.pop();
+				}
+			}
+		}
 	}
 }

@@ -39,4 +39,18 @@ public class Vertex {
 	public int getY() {
 		return _nY;
 	}
+	
+	public static double getDistance(Vertex[] vertexTuple) {
+		if (vertexTuple.length <= 1) {
+			return Double.MAX_VALUE;
+		} else {
+			int x1 = vertexTuple[0].getX();
+			int y1 = vertexTuple[0].getY();
+			int x2 = vertexTuple[1].getX();
+			int y2 = vertexTuple[1].getY();
+			
+			return Math.sqrt(Math.pow(x1-x2, 2) + Math.pow(y1-y2, 2));
+		}
+		
+	}
 }

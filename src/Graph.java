@@ -1,8 +1,11 @@
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
@@ -66,13 +69,13 @@ public class Graph {
 	}
 
 	public Vector<Vertex> vertices() throws GraphException {
-		Set verSet = this.vertices.entrySet();
+		Collection<Vertex> verSet = this.vertices.values();
 
 		return new Vector<Vertex>(verSet);
 	}
 
 	public Vector<Edge> edges() throws GraphException {
-		Set edgSet = this.edges.entrySet();
+		Collection<Edge> edgSet = this.edges.values();
 
 		return new Vector<Edge>(edgSet);
 	}
@@ -202,5 +205,111 @@ public class Graph {
 				}
 			}
 		}
+	}
+	
+
+	
+	private ArrayList<Vertex[]> divideVertex(Vertex[] curr, boolean horizontal, int median) {
+		ArrayList<Vertex[]> out = new ArrayList<Vertex[]>();
+		ArrayList<Vertex> first = new ArrayList<Vertex>();
+		ArrayList<Vertex> second = new ArrayList<Vertex>();
+		
+		for (Vertex v: curr) {
+			if (horizontal) {
+				if(v.getY() >= median) {
+					second.add(v);
+				} else {
+					first.add(v);
+				}
+			} else {
+				if(v.getX() >= median) {
+					second.add(v);
+				} else {
+					first.add(v);
+				}
+			}
+		}
+		
+		out.add((Vertex[])first.toArray());
+		out.add((Vertex[])second.toArray());	
+		return out;
+	}
+	
+	private Vertex[] getMidVertices(Vertex[] curr, boolean horizontal, int median, double range) {
+		ArrayList<Vertex> midVer = new ArrayList<Vertex>();
+		
+		for (Vertex v : curr) {
+			if (horizontal) {
+				if(v.getY() >= median - range && v.getY() <= median + range) {
+					midVer.add(v);
+				}
+			} else {
+				if(v.getX() >= median - range && v.getX() <= median + range) {
+					midVer.add(v);
+				}
+			}
+		}
+		
+		return (Vertex[])midVer.toArray();
+	}
+	
+	private int getMedian(Vertex[] curr, boolean horizontal) {
+
+		ArrayList<Integer> points = new ArrayList<Integer>();
+		
+		if (horizontal) {
+			for (Vertex v: curr) {
+				points.add(v.getY());
+			}
+		} else {
+			for (Vertex v: curr) {
+				points.add(v.getX());
+			}
+		}
+		Collections.sort(points);
+		return points.get(curr.length/2);
+	}
+	
+	
+	private Vertex[] closestPairHelper(Vertex[] curr, boolean horizontal) throws GraphException {
+		// @param horizontal : specifies if the next division will be by X or Y
+		int n = curr.length;
+		if(n <= 2) {
+			return curr;
+		} 
+		
+		int median = getMedian(curr, horizontal);
+		ArrayList<Vertex[]> dividedLists = divideVertex(curr, horizontal, median);
+		
+		Vertex[] leftOut = closestPairHelper(dividedLists.get(0), !horizontal);
+		Vertex[] rightOut = closestPairHelper(dividedLists.get(1), !horizontal);
+
+		double leftDist = Vertex.getDistance(leftOut);
+		double rightDist = Vertex.getDistance(rightOut);
+		
+		double min = Math.min(rightDist, leftDist);
+		
+		Vertex[] midVertex = getMidVertices(curr, horizontal, median, min);
+		Vertex[] midOut = closestPairHelper(midVertex, !horizontal);
+		double midDist = Vertex.getDistance(midOut);
+		
+		
+		min = Math.min(midDist, min);
+		
+		if (min == leftDist) {
+			return leftOut;
+		} else if(min == rightDist) {
+			return rightOut;
+		} else {
+			return midOut;
+		}
+	}
+	
+	// finds the closest pair of vertices using divide and conquer
+	// algorithm. Use X and Y attributes in each vertex.
+	public Vertex[] closestPair() throws GraphException {
+		Collection<Vertex> verts = this.vertices.values();
+		return closestPairHelper((Vertex[])verts.toArray(), true);
+		
 	}
 }

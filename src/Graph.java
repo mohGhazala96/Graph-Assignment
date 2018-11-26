@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
 
-public class Graph implements Visitor {
+public class Graph {
 
 	private HashMap<String, Vertex> vertices;
 	private HashMap<String, Edge> edges;

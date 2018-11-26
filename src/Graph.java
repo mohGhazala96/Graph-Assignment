@@ -160,6 +160,7 @@ public class Graph implements Visitor {
 		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
 
 		this.visit(originalVertex);
+		visitor.visit(originalVertex);
 		stack.push(originalVertex);
 		
 		while(!stack.isEmpty()){
@@ -175,6 +176,7 @@ public class Graph implements Visitor {
 					for(int i = 0;i<edgesOfVertex.size();i++){
 						if (!visitedEdges.contains(currentEdge)){
 							this.visit(currentEdge);
+							visitor.visit(currentEdge);
 							break;
 						}
 						
@@ -186,6 +188,7 @@ public class Graph implements Visitor {
 					Vertex nextVertex =currentEdge.get_vertices()[1];
 					if (!visitedVertices.contains(nextVertex)) {
 							this.visit(nextVertex);
+							visitor.visit(nextVertex);
 							stack.push(nextVertex);
 					}
 					else{

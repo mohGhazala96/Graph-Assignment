@@ -209,7 +209,7 @@ public class Graph {
 	
 
 	
-	private ArrayList<Vertex[]> divideVertex(Vertex[] curr, boolean horizontal, int median) {
+	private ArrayList<Vertex[]> divideVerticesByMedian(Vertex[] curr, boolean horizontal, int median) {
 		ArrayList<Vertex[]> out = new ArrayList<Vertex[]>();
 		ArrayList<Vertex> first = new ArrayList<Vertex>();
 		ArrayList<Vertex> second = new ArrayList<Vertex>();
@@ -279,7 +279,7 @@ public class Graph {
 		} 
 		
 		int median = getMedian(curr, horizontal);
-		ArrayList<Vertex[]> dividedLists = divideVertex(curr, horizontal, median);
+		ArrayList<Vertex[]> dividedLists = divideVerticesByMedian(curr, horizontal, median);
 		
 		Vertex[] leftOut = closestPairHelper(dividedLists.get(0), !horizontal);
 		Vertex[] rightOut = closestPairHelper(dividedLists.get(1), !horizontal);

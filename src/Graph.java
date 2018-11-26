@@ -105,11 +105,11 @@ public class Graph implements Visitor {
 		return current.getConnectedVertex(vertices.get(strVertexUniqueID));
 
 	}
-	public  void visit(Vertex v) { // store visited vertex
+	public void visit(Vertex v) { // store visited vertex
 		visitedVertices.add(v);
 
 	}
-	public  void visit(Edge e) { // store visited edge
+	public void visit(Edge e) { // store visited edge
 		visitedEdges.add(e);
 	}
 
@@ -135,11 +135,14 @@ public class Graph implements Visitor {
 			while (edgesOfVertex.hasNext()) {
 				Edge currentEdge = edgesOfVertex.next();
 				
-				if (!visitedEdges.contains(currentEdge)) 
+				if (!visitedEdges.contains(currentEdge)) {
 					this.visit(currentEdge);
+					visitor.visit(currentEdge);
+				} 
 				
 				Vertex nextVertex =currentEdge.get_vertices()[1];
 				if (!visitedVertices.contains(nextVertex)) {
+						visitor.visit(nextVertex);
 						this.visit(nextVertex);
 						queue.add(nextVertex);
 					}

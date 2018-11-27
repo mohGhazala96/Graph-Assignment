@@ -11,10 +11,9 @@ public class Graph {
 
 	private HashMap<String, Vertex> vertices;
 	private HashMap<String, Edge> edges;
-	
+	private boolean[] IsVisited;
 	private ArrayList<Edge> visitedEdges; //stores all visited edges per search in the array list
 	private ArrayList<Vertex> visitedVertices; //stores all visited vertices per search in the array list
-
 	public Graph() {
 		super();
 
@@ -202,5 +201,43 @@ public class Graph {
 				}
 			}
 		}
+	}
+	public Vector<PathSegment> pathDFS(String strStartVertexUniqueID,String strEndVertexUniqueID) throws GraphException {
+		Vector<PathSegment> path = new Vector<PathSegment>();
+		visitedEdges = new ArrayList<Edge>();
+		visitedVertices = new ArrayList<Vertex>();
+		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
+		Vertex endVertex = vertices.get(strEndVertexUniqueID);
+		PathSegment p = new PathSegment();
+		p._vertex = originalVertex;
+		path.addElement(p);
+		return  pathDfsHelper(originalVertex,endVertex,path);
+	}
+	public Vector<PathSegment> pathDfsHelper(Vertex start,Vertex end,Vector<PathSegment> path) {
+		this.visit(start);
+		if(start.equals(end)) {
+			
+			return path;
+		}
+		if(!(start._edges.isEmpty())) {
+			LinkedList<Edge> edgesOfVertex = start._edges;	
+			Edge currentEdge = edgesOfVertex.getFirst();
+			for(int i = 0;i<edgesOfVertex.size();i++){
+				if (!visitedEdges.contains(currentEdge)){
+					this.visit(currentEdge);
+					PathSegment x = new PathSegment();
+					x._edge = currentEdge;
+					path.addElement(x);
+					pathDfsHelper(currentEdge.get_vertices()[1], end,path);
+				}
+				
+				else{
+					currentEdge = edgesOfVertex.get(i);
+					this.visit(currentEdge);
+					pathDfsHelper(currentEdge.get_vertices()[1], end,path);
+				}
+			}
+		}
+		return path;
 	}
 }

@@ -339,7 +339,17 @@ public class Graph {
 	public Vertex[] closestPair() throws GraphException {
 		Collection<Vertex> verts = this.vertices.values();
 		Vertex[] verticesOut=  verts.toArray(new Vertex[0]);
-		return closestPairHelper(verticesOut, true);
+		Vertex[] outHor = closestPairHelper(verticesOut, true);
+		Vertex[] outVer = closestPairHelper(verticesOut, false);
+		
+		double disHor = Vertex.getDistance(outHor);
+		double disVer = Vertex.getDistance(outVer);
+		
+		if (disHor <= disVer) {
+			return outHor;
+		} else {
+			return outVer;
+		}
 	}
 	
 	//for testing
@@ -390,10 +400,11 @@ public class Graph {
 		Graph g = new Graph( );
 		TestVisitor gVisitor = new TestVisitor();
 		g.insertVertex("1", "1",0,0 );
-		g.insertVertex("2", "2",60,60);
-		g.insertVertex("3", "3",49,50);
-		g.insertVertex("4", "4",49,49);
-		g.insertVertex("5", "5",50,50);
+		g.insertVertex("2", "2",2,2);
+		g.insertVertex("3", "3",15,15);
+		g.insertVertex("4", "4",16,17);
+		g.insertVertex("5", "5",14,14);
+		g.insertVertex("7", "7",60,60);
 		g.insertEdge("1","4","88","88",5);
 		g.insertEdge("1","2","2","2", 2);
 		g.insertEdge("2", "3","14","14",14);

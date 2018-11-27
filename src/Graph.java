@@ -348,6 +348,8 @@ public class Graph {
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
 		
+		//CAll YOUR METHOD HERE
+		
 		// returns the vertices and edges you have visisted
 //		System.out.println(gVisitor._strResult);
 

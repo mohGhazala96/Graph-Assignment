@@ -12,6 +12,7 @@ public class Vertex {
 		this._strData = _strData;
 		this._nX = _nX;
 		this._nY = _nY;
+		this._edges= new LinkedList<Edge>();
 	}
 
 	public Vertex(StringBuffer _strUniqueID, StringBuffer _strData) {

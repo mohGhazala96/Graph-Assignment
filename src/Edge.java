@@ -15,7 +15,7 @@ public class Edge {
 	
 	
 	public Edge(StringBuffer _strUniqueID, StringBuffer _strData, int _nEdgeCost, Vertex v1, Vertex v2) {
-		super();
+		
 		this._strUniqueID = _strUniqueID;
 		this._strData = _strData;
 		this._nEdgeCost = _nEdgeCost;

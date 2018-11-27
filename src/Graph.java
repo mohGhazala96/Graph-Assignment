@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
@@ -22,7 +23,15 @@ public class Graph {
 		super();
 
 		this.vertices = new HashMap<String, Vertex>();
+		this.edges= new HashMap<String, Edge> ();
 	}
+	public String getLibraryName( ){
+		return "A Great Graph Library";
+	}
+
+	public String getLibraryVersion( ){
+		return "0.1";
+	 }
 
 	public void insertVertex(String strUniqueID, String strData, int nX, int nY) throws GraphException {
 		if (vertices.containsKey(strUniqueID)) {
@@ -30,56 +39,28 @@ public class Graph {
 		}
 
 		Vertex vertex = new Vertex(new StringBuffer(strUniqueID), new StringBuffer(strData), nX, nY);
-
 		vertices.put(strUniqueID, vertex);
+		System.out.println("Inserted vertex "+strUniqueID+" successfully");
 	}
 
 	// inserts an edge between 2 specified vertices
 	public void insertEdge(String strVertex1UniqueID, String strVertex2UniqueID, String strEdgeUniqueID,
 			String strEdgeData, int nEdgeCost) throws GraphException {
-
 		if (edges.containsKey(strEdgeUniqueID)) {
 			throw new GraphException("Edge Already Exist");
-		}
+		}else if(!vertices.containsKey(strVertex1UniqueID)  ) {
+			throw new GraphException("Vertix "+strVertex1UniqueID +" doesn't exist");			
+		}else if(!vertices.containsKey(strVertex2UniqueID) ) {
+			throw new GraphException("Vertix "+strVertex2UniqueID +" doesn't exist");			
+		} 
 		Vertex vertexA = this.vertices.get(strVertex1UniqueID);
 		Vertex vertexB = this.vertices.get(strVertex2UniqueID);
 		Edge edge = new Edge(new StringBuffer(strEdgeUniqueID), new StringBuffer(strEdgeData), nEdgeCost, vertexA,
 				vertexB);
 		edges.put(strEdgeUniqueID, edge);
-
+		System.out.println("Inserted Edge "+strEdgeUniqueID+" successfully");
 	}
-
-	// removes an edge from the graph
-	public void removeEdge(String strEdgeUniqueID) throws GraphException {
-		if (!edges.containsKey(strEdgeUniqueID)) {
-			throw new GraphException("Edge Not Found");
-		}
-		edges.get(strEdgeUniqueID).removeEdge();
-		edges.remove(strEdgeUniqueID);
-	}
-
-	public Vector<Edge> incidentEdges(String strVertexUniqueID) throws GraphException {
-		Vertex vertex = vertices.get(strVertexUniqueID);
-
-		if (vertex == null) {
-			throw new GraphException("Vertex doesn't exist.");
-		}
-
-		return new Vector<Edge>(vertex._edges);
-	}
-
-	public Vector<Vertex> vertices() throws GraphException {
-		Collection<Vertex> verSet = this.vertices.values();
-
-		return new Vector<Vertex>(verSet);
-	}
-
-	public Vector<Edge> edges() throws GraphException {
-		Collection<Edge> edgSet = this.edges.values();
-
-		return new Vector<Edge>(edgSet);
-	}
-
+	
 	public void removeVertex(String strVertexUniqueID) throws GraphException {
 		for (int i = 0; i < vertices.get(strVertexUniqueID)._edges.size(); i++) {
 			boolean found = false;
@@ -98,6 +79,39 @@ public class Graph {
 		}
 		vertices.remove(strVertexUniqueID);
 	}
+
+	// removes an edge from the graph
+	public void removeEdge(String strEdgeUniqueID) throws GraphException {
+		if (!edges.containsKey(strEdgeUniqueID)) {
+			throw new GraphException("Edge Not Found");
+		}
+		edges.get(strEdgeUniqueID).removeEdge();
+		edges.remove(strEdgeUniqueID);
+		System.out.println("Removed Edge "+strEdgeUniqueID+" successfully");
+
+	}
+
+	public Vector<Edge> incidentEdges(String strVertexUniqueID) throws GraphException {
+		Vertex vertex = vertices.get(strVertexUniqueID);
+
+		if (vertex == null) {
+			throw new GraphException("Vertex doesn't exist.");
+		}
+		return new Vector<Edge>(vertex._edges);
+	}
+
+	public Vector<Vertex> vertices() throws GraphException {
+		Collection<Vertex> verSet = this.vertices.values();
+
+		return new Vector<Vertex>(verSet);
+	}
+
+	public Vector<Edge> edges() throws GraphException {
+		Collection<Edge> edgSet = this.edges.values();
+
+		return new Vector<Edge>(edgSet);
+	}
+
 
 	public Vertex[] endVertices(String strEdgeUniqueID) throws GraphException {
 		return edges.get(strEdgeUniqueID).get_vertices();
@@ -310,6 +324,73 @@ public class Graph {
 	public Vertex[] closestPair() throws GraphException {
 		Collection<Vertex> verts = this.vertices.values();
 		return closestPairHelper((Vertex[])verts.toArray(), true);
+	}
+	
+	//for testing
+	public void printPresentEdgesAndVertices() {
+		System.out.println(this.vertices.toString());
+		System.out.println(this.edges.toString());
+
+	}
+	public static void main(String args[]) throws GraphException {
+		Graph g = new Graph( );
+		TestVisitor gVisitor = new TestVisitor();
+		g.insertVertex("1", "1",0,0 );
+		g.insertVertex("2", "2",0,0);
+		g.insertVertex("3", "3",0,0);
+		g.insertVertex("4", "4",0,0);
+		g.insertVertex("5", "5",0,0);
+		g.insertEdge("1","4","88","88",5);
+		g.insertEdge("1","2","2","2", 2);
+		g.insertEdge("2", "3","14","14",14);
+		g.insertEdge("2", "4","99","99",5);
+		g.insertEdge("2", "5","4","4",4);
+		g.insertEdge("4", "5", "58", "58", 58);
+		g.insertEdge("3", "5", "34", "34", 34);
+		
+		// returns the vertices and edges you have visisted
+//		System.out.println(gVisitor._strResult);
+
+		
+		
+		//TESTED BAS MOMKN TOBSO FEH TANI PLEASE <3
+//		Vector<Edge> incidentEdges = g.incidentEdges("1");
+//	    Enumeration vectorElementsEnum = incidentEdges.elements();
+//	    while(vectorElementsEnum.hasMoreElements())
+//	    		System.out.println(vectorElementsEnum.nextElement());
+//		
+//	    Vector<Vertex> outputVertices= g.vertices();
+//	     vectorElementsEnum = outputVertices.elements();
+//	    while(vectorElementsEnum.hasMoreElements())
+//	    		System.out.println(vectorElementsEnum.nextElement());
+//
+//		Vector<Edge> outputEdges = g.edges();
+//	    vectorElementsEnum = outputEdges.elements();
+//	    while(vectorElementsEnum.hasMoreElements())
+//	    		System.out.println(vectorElementsEnum.nextElement());
+//		
+//	    Vertex[] endVerticesOut= g.endVertices("88");
+//		System.out.println(endVerticesOut[0]);
+//		System.out.println(endVerticesOut[1]);
+//		
+//	    Vertex oppositVertices= g.opposite("4", "88");
+//		System.out.println(oppositVertices);
+		
+//		g.removeVertex("1");
+//		g.removeVertex("2");
+//		g.removeVertex("3");
+//		g.removeVertex("4");
+//		g.removeVertex("5");
+
+//		g.removeEdge("88");
+//		g.removeEdge("2");
+//		g.removeEdge("14");
+//		g.removeEdge("99");
+//		g.removeEdge("4");
+//		g.removeEdge("58");
+//		g.removeEdge("34");
+
+//		g.printPresentEdgesAndVertices();;
 		
 	}
 }

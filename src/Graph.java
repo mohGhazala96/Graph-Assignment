@@ -227,24 +227,40 @@ public class Graph {
 		ArrayList<Vertex> first = new ArrayList<Vertex>();
 		ArrayList<Vertex> second = new ArrayList<Vertex>();
 		
+		// to divide points at the median equally in the 2 lists
+		boolean lastMed = true;
+		
 		for (Vertex v: curr) {
 			if (horizontal) {
-				if(v.getY() >= median) {
+				if(v.getY() == median) {
+					if(lastMed) {
+						second.add(v);
+					} else {
+						first.add(v);
+					}
+					lastMed = !lastMed;
+				} else if(v.getY() > median) {
 					second.add(v);
 				} else {
 					first.add(v);
 				}
 			} else {
-				if(v.getX() >= median) {
+				if(v.getX() == median) {
+					if(lastMed) {
+						second.add(v);
+					} else {
+						first.add(v);
+					}
+					lastMed = !lastMed;
+				} else if(v.getX() >= median) {
 					second.add(v);
 				} else {
 					first.add(v);
 				}
 			}
 		}
-		
-		out.add((Vertex[])first.toArray());
-		out.add((Vertex[])second.toArray());	
+		out.add(0, first.toArray(new Vertex[0]));
+		out.add(1, second.toArray(new Vertex[0]));	
 		return out;
 	}
 	
@@ -253,17 +269,17 @@ public class Graph {
 		
 		for (Vertex v : curr) {
 			if (horizontal) {
-				if(v.getY() >= median - range && v.getY() <= median + range) {
+				if(v.getY() > median - range/2.0 && v.getY() < median + range/2.0) {
 					midVer.add(v);
 				}
 			} else {
-				if(v.getX() >= median - range && v.getX() <= median + range) {
+				if(v.getX() > median - range/2.0 && v.getX() < median + range/2.0) {
 					midVer.add(v);
 				}
 			}
 		}
 		
-		return (Vertex[])midVer.toArray();
+		return midVer.toArray(new Vertex[0]);
 	}
 	
 	private int getMedian(Vertex[] curr, boolean horizontal) {
@@ -322,7 +338,8 @@ public class Graph {
 	// algorithm. Use X and Y attributes in each vertex.
 	public Vertex[] closestPair() throws GraphException {
 		Collection<Vertex> verts = this.vertices.values();
-		return closestPairHelper((Vertex[])verts.toArray(), true);
+		Vertex[] verticesOut=  verts.toArray(new Vertex[0]);
+		return closestPairHelper(verticesOut, true);
 	}
 	
 	//for testing
@@ -373,10 +390,10 @@ public class Graph {
 		Graph g = new Graph( );
 		TestVisitor gVisitor = new TestVisitor();
 		g.insertVertex("1", "1",0,0 );
-		g.insertVertex("2", "2",0,0);
-		g.insertVertex("3", "3",0,0);
-		g.insertVertex("4", "4",0,0);
-		g.insertVertex("5", "5",0,0);
+		g.insertVertex("2", "2",60,60);
+		g.insertVertex("3", "3",49,50);
+		g.insertVertex("4", "4",49,49);
+		g.insertVertex("5", "5",50,50);
 		g.insertEdge("1","4","88","88",5);
 		g.insertEdge("1","2","2","2", 2);
 		g.insertEdge("2", "3","14","14",14);

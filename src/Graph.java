@@ -15,11 +15,18 @@ public class Graph {
 
 	private HashMap<String, Vertex> vertices;
 	private HashMap<String, Edge> edges;
-	private boolean[] IsVisited;
+	private PathSegment p ;
+	private ArrayList<Vertex> localPath;
+	private ArrayList<Vertex> finalPath;
+	private Vector<PathSegment> path;
 	private ArrayList<Edge> visitedEdges; //stores all visited edges per search in the array list
 	private ArrayList<Vertex> visitedVertices; //stores all visited vertices per search in the array list
+	private ArrayList<Edge> testEdge;
 	public Graph() {
 		super();
+		this.localPath = new ArrayList<Vertex>();
+		this.finalPath = new ArrayList<Vertex>();
+		this.testEdge = new ArrayList<Edge>();
 
 		this.vertices = new HashMap<String, Vertex>();
 		this.edges= new HashMap<String, Edge> ();
@@ -332,43 +339,59 @@ public class Graph {
 
 	}
 	public Vector<PathSegment> pathDFS(String strStartVertexUniqueID,String strEndVertexUniqueID) throws GraphException {
-		Vector<PathSegment> path = new Vector<PathSegment>();
+		path = new Vector<PathSegment>(); //init
+		p = new PathSegment();
 		visitedEdges = new ArrayList<Edge>();
 		visitedVertices = new ArrayList<Vertex>();
 		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
 		Vertex endVertex = vertices.get(strEndVertexUniqueID);
-		PathSegment p = new PathSegment();
-		p._vertex = originalVertex;
-		path.addElement(p);
-		return  pathDfsHelper(originalVertex,endVertex,path);
-	}
-	public Vector<PathSegment> pathDfsHelper(Vertex start,Vertex end,Vector<PathSegment> path) {
-		this.visit(start);
-		if(start.equals(end)) {
-			
-			return path;
+		localPath.add(originalVertex); //add src to path
+		pathDfsHelper(originalVertex, endVertex);
+		for(int i = 0;i<finalPath.size();i++) {//after getting the final path of vertex and edges , init new vector of pathsegment
+			p = new PathSegment();
+			p._vertex = finalPath.get(i);
+			if(i<finalPath.size()-1) {
+				p._edge = testEdge.get(i);
+			}
+			path.add(p);
 		}
-		if(!(start._edges.isEmpty())) {
-			LinkedList<Edge> edgesOfVertex = start._edges;	
-			Edge currentEdge = edgesOfVertex.getFirst();
-			for(int i = 0;i<edgesOfVertex.size();i++){
-				if (!visitedEdges.contains(currentEdge)){
-					this.visit(currentEdge);
-					PathSegment x = new PathSegment();
-					x._edge = currentEdge;
-					path.addElement(x);
-					pathDfsHelper(currentEdge.get_vertices()[1], end,path);
-				}
-				
-				else{
-					currentEdge = edgesOfVertex.get(i);
-					this.visit(currentEdge);
-					pathDfsHelper(currentEdge.get_vertices()[1], end,path);
-				}
+		return  path;
+	}
+	//this method discovers all paths from src to dest using dfs , however 1 path is shown
+	public void pathDfsHelper(Vertex start,Vertex end) { //recursion helper for path using dfs
+		this.visit(start);   //initially mark source as visited
+		
+		if(start.equals(end)) { //gets last possible path if exists
+			for(int i = 0 ; i<localPath.size();i++) {
+				finalPath.add(localPath.get(i));
 			}
 		}
-		return path;
+		for(int i = 0 ; i<start._edges.size();i++) { //recur on all vertices adjacent to current vertex
+			if(!(visitedEdges.contains(start._edges.get(i)))) {//check that edge is never visited before
+			this.visit(start._edges.get(i));	//mark edge as visited
+			Vertex next = start._edges.get(i).get_vertices()[0];
+			if(start.equals(next)) { //make sure that new vertex is not same as old
+				next = start._edges.get(i).get_vertices()[1];
+			}
+			if(!(visitedVertices.contains(next))) { //check if vertex is visited to avoid cycling
+			testEdge.add(start._edges.get(i)); //sets actual edges taken in path
+			localPath.add(next); //add vertex in path
+			pathDfsHelper(next, end); //recur on new dest 
+			localPath.remove(next); //removes current vertex in path since there's several paths
+			}
+			}
+		}
+		visitedVertices.remove(start); //mark current vertex as unvisited to get the new path once more
 	}
+	public void printPath() { //prints path created by pathDfs
+		for(int i = 0;i<path.size();i++) {
+			System.out.print("("+path.get(i).getVertex().getUniqueID()+") ");
+			if(path.get(i).getEdge()!=null) {
+				System.out.print(path.get(i).getEdge().getUniqueID()+" ");
+			}
+		}
+	}
+
 	public static void main(String args[]) throws GraphException {
 		Graph g = new Graph( );
 		TestVisitor gVisitor = new TestVisitor();
@@ -384,12 +407,13 @@ public class Graph {
 		g.insertEdge("2", "5","4","4",4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
-		
+		Vector<PathSegment> path = g.pathDFS("1", "5");
+		g.printPath(); //prints path of pathDfs
+	
 		//CAll YOUR METHOD HERE
 		
 		// returns the vertices and edges you have visisted
-//		System.out.println(gVisitor._strResult);
-
+		
 		
 		
 		//TESTED BAS MOMKN TOBSO FEH TANI PLEASE <3

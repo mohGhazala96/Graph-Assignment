@@ -435,14 +435,17 @@ public class Graph {
 		g.insertEdge("2", "5","4","4",4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
-		Vector<PathSegment> path = g.pathDFS("1", "5");
-		g.printPath(); //prints path of pathDfs
+//mido		
+// 		Vector<PathSegment> path = g.pathDFS("1", "5");
+// 		g.printPath(); //prints path of pathDfs
 	
-		//CAll YOUR METHOD HERE
-		
+		//YASSER 
+		g.dfs("1",gVisitor);
+
 		// returns the vertices and edges you have visisted
 		
-		
+		System.out.println(gVisitor._strResult);
+
 		
 		//TESTED BAS MOMKN TOBSO FEH TANI PLEASE <3
 //		Vector<Edge> incidentEdges = g.incidentEdges("1");

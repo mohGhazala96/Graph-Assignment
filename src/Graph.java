@@ -152,7 +152,6 @@ public class Graph {
 
 		while (queue.size() != 0) {
 			Vertex outVertex = queue.poll();
-			System.out.print(outVertex._strUniqueID + " -> ");
 			Iterator<Edge> edgesOfVertex = outVertex._edges.listIterator();
 			
 			while (edgesOfVertex.hasNext()) {
@@ -424,33 +423,35 @@ public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphExce
 		Graph g = new Graph( );
 		TestVisitor gVisitor = new TestVisitor();
 		g.insertVertex("1", "1",0,0 );
-		g.insertVertex("2", "2",2,2);
-		g.insertVertex("3", "3",15,15);
-		g.insertVertex("4", "4",16,17);
-		g.insertVertex("5", "5",14,14);
-		g.insertVertex("7", "7",60,60);
-		g.insertVertex("8", "8",70,60);
-		g.insertEdge("1","4","88","88",5);
-		g.insertEdge("1","2","2","2", 2);
-		g.insertEdge("2", "3","14","14",14);
-		g.insertEdge("2", "4","99","99",5);
-		g.insertEdge("2", "8","43","43",7);
-		g.insertEdge("2", "5","4","4",4);
-		g.insertEdge("4", "5", "58", "58", 58);
-		g.insertEdge("3", "5", "34", "34", 34);
-		g.insertEdge("3", "7" , "33","33",43);
+		g.insertVertex("2", "2",60,60);
+ 		g.insertVertex("3", "3",49,50);
+ 		g.insertVertex("4", "4",49,49);
+ 		g.insertVertex("5", "5",50,50);
+ 		g.insertEdge("1","4","88","88",5);
+ 		g.insertEdge("1","2","2","2", 2);
+ 		g.insertEdge("2", "3","14","14",14);
+ 		g.insertEdge("2", "4","99","99",5);
+ 		g.insertEdge("2", "5","4","4",4);
+ 		g.insertEdge("4", "5", "58", "58", 58);
+ 		g.insertEdge("3", "5", "34", "34", 34);
 //mido		
 // 		Vector<PathSegment> path = g.pathDFS("1", "5");
 // 		g.printPath(); //prints path of pathDfs
 	
-		//YASSER 
+		//aboughazala 
+//		g.bfs("1",gVisitor);
+
+ 		//yasser
 		g.dfs("1",gVisitor);
 
 		// returns the vertices and edges you have visited
 		
 		System.out.println(gVisitor._strResult);
-
-		
+//wessam 
+//		Vertex[] cp= g.closestPair();
+//		for(int i=0;i<cp.length;i++)
+//			System.out.println(cp[i]._strData.toString());
+//		
 		//TESTED BAS MOMKN TOBSO FEH TANI PLEASE <3
 //		Vector<Edge> incidentEdges = g.incidentEdges("1");
 //	    Enumeration vectorElementsEnum = incidentEdges.elements();

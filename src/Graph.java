@@ -173,51 +173,46 @@ public class Graph {
 		}
 
 	}
-	
-	public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException{
-		
-		visitedEdges = new ArrayList<Edge>();
-		visitedVertices = new ArrayList<Vertex>();
-		
-		Stack stack = new Stack();
-		Vertex originalVertex = vertices.get(strStartVertexUniqueID);
 
-		this.visit(originalVertex);
-		visitor.visit(originalVertex);
-		stack.push(originalVertex);
+public void dfs(String strStartVertexUniqueID, Visitor visitor) throws GraphException{
+	
+	visitedEdges = new ArrayList<Edge>();
+	visitedVertices = new ArrayList<Vertex>();
+	
+	Stack<Vertex> stack = new Stack<Vertex>();
+	Vertex originalVertex = vertices.get(strStartVertexUniqueID);
+
+	this.visit(originalVertex);
+	visitor.visit(originalVertex);
+	stack.push(originalVertex);
+	
+	while(!stack.isEmpty()){
+		boolean noMore = false;
 		
-		while(!stack.isEmpty()){
-			
-			boolean noMore = false;
-			
-			while(!noMore){
-				
-				if(!((Vertex)stack.peek())._edges.isEmpty()){
-					LinkedList<Edge> edgesOfVertex = ((Vertex)stack.peek())._edges;	
-					Edge currentEdge = edgesOfVertex.getFirst();
-				
-					for(int i = 0;i<edgesOfVertex.size();i++){
-						if (!visitedEdges.contains(currentEdge)){
-							this.visit(currentEdge);
-							visitor.visit(currentEdge);
-							break;
-						}
-						
-						else{
-							currentEdge = edgesOfVertex.get(i);
-						}
-					}
-				
-					Vertex nextVertex =currentEdge.get_vertices()[1];
-					if (!visitedVertices.contains(nextVertex)) {
-							this.visit(nextVertex);
-							visitor.visit(nextVertex);
-							stack.push(nextVertex);
-					}
-					else{
-						noMore = true;
-						stack.pop();
-					}
+		if(!(stack.peek())._edges.isEmpty()){
+			LinkedList<Edge> edgesOfVertex = (stack.peek())._edges;	
+			Edge currentEdge = null;
+		
+			for(int i = 0;i<edgesOfVertex.size();i++){
+				currentEdge = edgesOfVertex.get(i);
+				if (!(visitedEdges.contains(currentEdge))){
+					this.visit(currentEdge);
+					visitor.visit(currentEdge);
+					break;
+				}
+				if( i== edgesOfVertex.size()-1 && visitedEdges.contains(currentEdge)){
+					noMore = true;
+				}
+			}
+			if(noMore){
+				stack.pop();
+			}
+			else{
+				Vertex nextVertex =currentEdge.get_vertices()[1];
+				if (!visitedVertices.contains(nextVertex)) {
+						this.visit(nextVertex);
+						visitor.visit(nextVertex);
+						stack.push(nextVertex);
 				}
 				else{
 					noMore = true;
@@ -225,8 +220,14 @@ public class Graph {
 				}
 			}
 		}
+		else{
+			stack.pop();
+		}
 	}
-	
+	for(int i =0;i<visitedVertices.size();i++){
+		System.out.println("number " + i +" is " + visitedVertices.get(i)._strUniqueID);
+	}
+}
 
 	
 	private ArrayList<Vertex[]> divideVerticesByMedian(Vertex[] curr, boolean horizontal, int median) {
@@ -428,13 +429,16 @@ public class Graph {
 		g.insertVertex("4", "4",16,17);
 		g.insertVertex("5", "5",14,14);
 		g.insertVertex("7", "7",60,60);
+		g.insertVertex("8", "8",70,60);
 		g.insertEdge("1","4","88","88",5);
 		g.insertEdge("1","2","2","2", 2);
 		g.insertEdge("2", "3","14","14",14);
 		g.insertEdge("2", "4","99","99",5);
+		g.insertEdge("2", "8","43","43",7);
 		g.insertEdge("2", "5","4","4",4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
+		g.insertEdge("3", "7" , "33","33",43);
 //mido		
 // 		Vector<PathSegment> path = g.pathDFS("1", "5");
 // 		g.printPath(); //prints path of pathDfs
@@ -442,7 +446,7 @@ public class Graph {
 		//YASSER 
 		g.dfs("1",gVisitor);
 
-		// returns the vertices and edges you have visisted
+		// returns the vertices and edges you have visited
 		
 		System.out.println(gVisitor._strResult);
 

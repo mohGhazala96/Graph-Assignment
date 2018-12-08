@@ -428,8 +428,7 @@ public class Graph {
 	// paths starting from given vertex.
 	// Use Edge._nEdgeCost attribute in finding the shortest path
 	public Vector<Vector<PathSegment>> findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
-		Vector<Vector<PathSegment>> shortestPaths = new Vector<Vector<PathSegment>>();
-		
+		HashMap<Vertex, Vector<PathSegment>> shortestPaths = new HashMap<Vertex, Vector<PathSegment>>();
 		// maps the key of the vertex to actual cost reaching the vertex
 		HashMap<String, Integer> costToVertex = new HashMap<String, Integer>();
 		
@@ -438,33 +437,45 @@ public class Graph {
 			if (entry.getKey().equals(strStartVertexUniqueID)) {
 				costToVertex.put(entry.getKey(), 0);
 			}
-			shortestPaths.add(null);// CHANGE THIS YA WESSAM IF
+			shortestPaths.put(entry.getValue(), new Vector<PathSegment>());
 			costToVertex.put(entry.getKey(), Integer.MAX_VALUE);
 
 		}
 
 		// picks each vertex and goes through all possible edges to update the cost
-		for (Entry<String, Vertex> vertex : this.vertices.entrySet()) {
+		for (int i = 0; i < this.vertices.size(); i++) {
 			for (Entry<String, Edge> edge : this.edges.entrySet()) {
-				
+
 				String u = edge.getValue().get_vertices()[0]._strUniqueID.toString();//source vertex id
 				String v = edge.getValue().get_vertices()[1]._strUniqueID.toString();//destination vertex id
 				int weight = edge.getValue()._nEdgeCost; // weight of the edge between them
-				
-				
+
+
 				/*if the cost of the source is not infinity and the cost of the source plus the weight of the
 				  edge between the source and the destination is less than the cost of the destination vertex
 				  then update the cost of the destination vertex*/
 				if (costToVertex.get(u) != Integer.MAX_VALUE && costToVertex.get(u)+weight<costToVertex.get(v) ) {
-					
+
 					costToVertex.put(v, costToVertex.get(u) + weight); // update the cost relative to the destination id
-					// update the shortest path Array here YA WESSAM
+					
+					Vector<PathSegment> vPath = shortestPaths.get(v);
+					Vector<PathSegment> uPath = shortestPaths.get(u);
+					
+					vPath.clear();
+					
+					for(PathSegment path: uPath) {
+						vPath.add(path);
+					}
 				}
 			}
 		}
-
-		return null;
-
+		
+		Vector<Vector<PathSegment>> returnValue = new Vector<Vector<PathSegment>>();
+		
+		for(Entry<Vertex, Vector<PathSegment>> entry: shortestPaths.entrySet()) {
+			returnValue.add(entry.getValue());
+		}
+		return returnValue;
 	}
 
 	public static void main(String args[]) throws GraphException {

@@ -428,8 +428,6 @@ public class Graph {
 	// paths starting from given vertex.
 	// Use Edge._nEdgeCost attribute in finding the shortest path
 	public Vector<Vector<PathSegment>> findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
-		int verticesCount = this.vertices.size();
-		int edgesCount = this.edges.size();
 		Vector<Vector<PathSegment>> shortestPaths = new Vector<Vector<PathSegment>>();
 		
 		// maps the key of the vertex to actual cost reaching the vertex
@@ -440,7 +438,7 @@ public class Graph {
 			if (entry.getKey().equals(strStartVertexUniqueID)) {
 				costToVertex.put(entry.getKey(), 0);
 			}
-			shortestPaths.add(null);// CHANGE THIS YA WESSAM IF YOU WANT
+			shortestPaths.add(null);// CHANGE THIS YA WESSAM IF
 			costToVertex.put(entry.getKey(), Integer.MAX_VALUE);
 
 		}

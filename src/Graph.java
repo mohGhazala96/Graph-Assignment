@@ -428,7 +428,7 @@ public class Graph {
 	// paths starting from given vertex.
 	// Use Edge._nEdgeCost attribute in finding the shortest path
 	public Vector<Vector<PathSegment>> findShortestPathBF(String strStartVertexUniqueID) throws GraphException {
-		HashMap<Vertex, Vector<PathSegment>> shortestPaths = new HashMap<Vertex, Vector<PathSegment>>();
+		HashMap<String, Vector<PathSegment>> shortestPaths = new HashMap<String, Vector<PathSegment>>();
 		// maps the key of the vertex to actual cost reaching the vertex
 		HashMap<String, Integer> costToVertex = new HashMap<String, Integer>();
 		
@@ -437,7 +437,7 @@ public class Graph {
 			if (entry.getKey().equals(strStartVertexUniqueID)) {
 				costToVertex.put(entry.getKey(), 0);
 			}
-			shortestPaths.put(entry.getValue(), new Vector<PathSegment>());
+			shortestPaths.put(entry.getValue()._strUniqueID.toString(), new Vector<PathSegment>());
 			costToVertex.put(entry.getKey(), Integer.MAX_VALUE);
 
 		}
@@ -466,13 +466,14 @@ public class Graph {
 					for(PathSegment path: uPath) {
 						vPath.add(path);
 					}
+					vPath.add(new PathSegment(edge.getValue().get_vertices()[1], edge.getValue()));
 				}
 			}
 		}
 		
 		Vector<Vector<PathSegment>> returnValue = new Vector<Vector<PathSegment>>();
 		
-		for(Entry<Vertex, Vector<PathSegment>> entry: shortestPaths.entrySet()) {
+		for(Entry<String, Vector<PathSegment>> entry: shortestPaths.entrySet()) {
 			returnValue.add(entry.getValue());
 		}
 		return returnValue;

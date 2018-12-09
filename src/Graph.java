@@ -2,6 +2,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map.Entry;
@@ -479,6 +480,65 @@ public class Graph {
 		return returnValue;
 	}
 
+	
+	// finds all shortest paths using Floyd–Warshall dynamic
+	// programming algorithm and returns all such paths. Use
+	// Edge._nEdgeCost attribute in finding the shortest path
+	//
+	public Vector<Vector<PathSegment>> findAllShortestPathsFW( ) throws GraphException {
+		Hashtable<Vertex, Hashtable<Vertex, Integer>> costs = new Hashtable<Vertex, Hashtable<Vertex, Integer>>();
+		
+		for (Entry<String, Vertex> e : this.vertices.entrySet()) {
+			Vertex v = e.getValue();
+			costs.put(v, new Hashtable<Vertex, Integer>());
+			costs.get(v).put(v, 0);
+		}
+		
+		for (Entry<String, Edge> e : this.edges.entrySet()) {
+			Edge edge = e.getValue();
+			costs.get(edge.get_vertices()[0]).put(edge.get_vertices()[1], edge.getCost());
+		}
+		
+		for (Entry<String, Vertex> ei : this.vertices.entrySet()) {
+			Vertex vi = ei.getValue();
+			for (Entry<String, Vertex> ej : this.vertices.entrySet()) {
+				Vertex vj = ei.getValue();
+				for (Entry<String, Vertex> ek : this.vertices.entrySet()) {
+					Vertex vk = ei.getValue();
+					long costij = Integer.MAX_VALUE;
+					long costik = Integer.MAX_VALUE;
+					long costkj = Integer.MAX_VALUE;
+					
+					boolean flag = true;
+					
+					if (costs.get(vi).containsKey(vj)) {
+						costij = costs.get(vi).get(vj);
+						flag = false;
+					}
+					if (costs.get(vi).containsKey(vk)) {
+						costik = costs.get(vi).get(vk);
+						flag = false;
+					}
+					if (costs.get(vk).containsKey(vj)) {
+						costkj = costs.get(vk).get(vj);
+						flag = false;
+					}
+					
+					if (flag) {
+						continue;
+					}
+					
+					if (costij > costik + costkj) {
+						costs.get(vi).put(vj, (int)(costik + costkj));
+						
+						// updates to path segments here
+					}
+				}
+			}
+		}
+		return null;
+	}
+	
 	public static void main(String args[]) throws GraphException {
 		Graph g = new Graph();
 		TestVisitor gVisitor = new TestVisitor();

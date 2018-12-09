@@ -487,16 +487,23 @@ public class Graph {
 	//
 	public Vector<Vector<PathSegment>> findAllShortestPathsFW( ) throws GraphException {
 		Hashtable<Vertex, Hashtable<Vertex, Integer>> costs = new Hashtable<Vertex, Hashtable<Vertex, Integer>>();
+		Hashtable<Vertex, Hashtable<Vertex, Vector<PathSegment>>> paths = new Hashtable<Vertex, Hashtable<Vertex, Vector<PathSegment>>>();
+		
 		
 		for (Entry<String, Vertex> e : this.vertices.entrySet()) {
 			Vertex v = e.getValue();
 			costs.put(v, new Hashtable<Vertex, Integer>());
 			costs.get(v).put(v, 0);
+			paths.put(v, new Hashtable<Vertex, Vector<PathSegment>>());
 		}
 		
 		for (Entry<String, Edge> e : this.edges.entrySet()) {
 			Edge edge = e.getValue();
-			costs.get(edge.get_vertices()[0]).put(edge.get_vertices()[1], edge.getCost());
+			Vertex v0 = edge.get_vertices()[0];
+			Vertex v1 = edge.get_vertices()[1];
+			costs.get(v0).put(v1, edge.getCost());
+			paths.get(v0).put(v1, new Vector<PathSegment>());
+			paths.get(v0).get(v1).add(new PathSegment(v1, edge));
 		}
 		
 		for (Entry<String, Vertex> ei : this.vertices.entrySet()) {
@@ -513,30 +520,53 @@ public class Graph {
 					
 					if (costs.get(vi).containsKey(vj)) {
 						costij = costs.get(vi).get(vj);
-						flag = false;
 					}
 					if (costs.get(vi).containsKey(vk)) {
 						costik = costs.get(vi).get(vk);
-						flag = false;
 					}
 					if (costs.get(vk).containsKey(vj)) {
 						costkj = costs.get(vk).get(vj);
-						flag = false;
 					}
 					
-					if (flag) {
-						continue;
-					}
 					
 					if (costij > costik + costkj) {
 						costs.get(vi).put(vj, (int)(costik + costkj));
 						
-						// updates to path segments here
+						paths.get(vi).remove(vj);
+						paths.get(vi).put(vj, new Vector<PathSegment>());
+						
+						Vector<PathSegment> path = new Vector<PathSegment>();
+						for (PathSegment segment : paths.get(vi).get(vk)) {
+							path.add(segment);
+						}
+						for (PathSegment segment : paths.get(vk).get(vj)) {
+							path.add(segment);
+						}
 					}
 				}
 			}
 		}
-		return null;
+		
+		Vector<Vector<PathSegment>> returnValue = new Vector<Vector<PathSegment>>();
+		
+		
+		for (Entry<String, Vertex> ei : this.vertices.entrySet()) {
+			Vertex vi = ei.getValue();
+			for (Entry<String, Vertex> ej : this.vertices.entrySet()) {
+				Vertex vj = ej.getValue();
+				
+				if (!paths.get(vi).containsKey(vj)) {
+					continue;
+				} else if (paths.get(vi).get(vj).size() == 0) {
+					continue;
+				} else {
+					returnValue.add(paths.get(vi).get(vj));
+				}
+				
+			}
+		}
+		
+		return returnValue;
 	}
 	
 	public static void main(String args[]) throws GraphException {

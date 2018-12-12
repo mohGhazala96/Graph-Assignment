@@ -423,7 +423,75 @@ public class Graph {
 			}
 		}
 	}
+	
+	public Vector<PathSegment> minSpanningTree() throws GraphException{
+		ArrayList<String> sortedEdges = new ArrayList<String>();
+		ArrayList<Edge> actualSortedEdges = new ArrayList<Edge>();
+		ArrayList<Vertex> visitedSoFar = new ArrayList<Vertex>();
+		ArrayList<Edge> visitedSoFar2 = new ArrayList<Edge>();
+		Vector<PathSegment> result = new Vector<PathSegment>();	
+		int k = 0;
+		for (Entry<String, Edge> entry : this.edges.entrySet()){
+			sortedEdges.add(entry.getValue()._strUniqueID.toString());
+		}
+		for (int i = 0; i < sortedEdges.size()-1; i++){       
+		       for (int j = 0; j < sortedEdges.size()-i-1; j++){  
+		           if (edges.get(sortedEdges.get(j))._nEdgeCost > edges.get(sortedEdges.get(j+1))._nEdgeCost) {
+		        	  String temp = sortedEdges.get(j);
+		        	  sortedEdges.set(j, sortedEdges.get(j+1));
+		        	  sortedEdges.set(j+1, temp);
+		           }
+		       }
+		}
+		for(int i = 0;i< sortedEdges.size();i++){
+			actualSortedEdges.add(edges.get(sortedEdges.get(i)));
+		}
 
+		while(result.size()!=vertices.size()-1){
+			
+			if(result.isEmpty()){
+				visitedSoFar.add(actualSortedEdges.get(k).get_vertices()[0]);
+				visitedSoFar2.add(actualSortedEdges.get(k));
+				result.addElement(new PathSegment(actualSortedEdges.get(k).get_vertices()[0],actualSortedEdges.get(k)));
+			}
+			else{
+				visitedSoFar2.add(actualSortedEdges.get(k));
+				boolean cycle = cycleCheck(visitedSoFar2);
+				if(!cycle){
+					visitedSoFar.add(actualSortedEdges.get(k).get_vertices()[0]);
+					result.addElement(new PathSegment(actualSortedEdges.get(k).get_vertices()[0],actualSortedEdges.get(k)));
+				}
+				else{
+					visitedSoFar2.remove(visitedSoFar2.size()-1);
+				}
+			}
+			k++;
+		}
+		return result;
+	}
+	public boolean cycleCheck(ArrayList<Edge> e){
+		ArrayList<Vertex> v = new ArrayList<Vertex>();
+		for(int i = 0;i<e.size();i++){
+			if(v.isEmpty()){
+				v.add(e.get(i).get_vertices()[0]);
+				v.add(e.get(i).get_vertices()[1]);
+			}
+			else{
+				if(!(v.contains(e.get(i).get_vertices()[0]))){
+					v.add(e.get(i).get_vertices()[0]);
+				}
+				if(!(v.contains(e.get(i).get_vertices()[1]))){
+					v.add(e.get(i).get_vertices()[1]);
+				}
+			}
+		}
+		if(e.size()<v.size()){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
 	
 	// finds shortest paths using bellman ford dynamic programming returns all such
 	// paths starting from given vertex.
@@ -617,7 +685,9 @@ public class Graph {
 		g.insertEdge("2", "5", "4", "4", 4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
-
+		g.insertEdge("3", "4", "77", "77", 71);
+		g.insertEdge("3", "1", "38", "37", 30);
+		g.minSpanningTree();
 		// mido
 		// Vector<PathSegment> path = g.pathDFS("1", "5");
 		// g.printPath(); //prints path of pathDfs

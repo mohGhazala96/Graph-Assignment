@@ -61,4 +61,17 @@ public class Edge {
 		this._vertices[1]._edges.remove(this);
 
 	}
+//	public int compareTo(Edge e){
+//		if(this._nEdgeCost == e._nEdgeCost){
+//			return 0;
+//		}
+//		else{
+//			if(this._nEdgeCost < e._nEdgeCost){
+//				return -1;
+//			}
+//			else{
+//				return 1;
+//			}
+//		}
+//	}
 }

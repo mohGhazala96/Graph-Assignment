@@ -435,11 +435,14 @@ public class Graph {
 		
 		//Initializes the cost to all vertices to infinity except for the start vertex to zero
 		for (Entry<String, Vertex> entry : this.vertices.entrySet()) {
-			if (entry.getKey().equals(strStartVertexUniqueID)) {
+
+			if (entry.getKey().toString().equals(strStartVertexUniqueID)) {
 				costToVertex.put(entry.getKey(), 0);
+			}else {
+				costToVertex.put(entry.getKey(), Integer.MAX_VALUE);
+
 			}
 			shortestPaths.put(entry.getValue()._strUniqueID.toString(), new Vector<PathSegment>());
-			costToVertex.put(entry.getKey(), Integer.MAX_VALUE);
 
 		}
 
@@ -451,11 +454,13 @@ public class Graph {
 				String v = edge.getValue().get_vertices()[1]._strUniqueID.toString();//destination vertex id
 				int weight = edge.getValue()._nEdgeCost; // weight of the edge between them
 
+//				 System.out.println(costToVertex.get(u) );
 
 				/*if the cost of the source is not infinity and the cost of the source plus the weight of the
 				  edge between the source and the destination is less than the cost of the destination vertex
 				  then update the cost of the destination vertex*/
 				if (costToVertex.get(u) != Integer.MAX_VALUE && costToVertex.get(u)+weight<costToVertex.get(v) ) {
+//					 System.out.println("here");
 
 					costToVertex.put(v, costToVertex.get(u) + weight); // update the cost relative to the destination id
 					
@@ -465,6 +470,7 @@ public class Graph {
 					vPath.clear();
 					
 					for(PathSegment path: uPath) {
+
 						vPath.add(path);
 					}
 					vPath.add(new PathSegment(edge.getValue().get_vertices()[1], edge.getValue()));
@@ -504,43 +510,70 @@ public class Graph {
 			costs.get(v0).put(v1, edge.getCost());
 			paths.get(v0).put(v1, new Vector<PathSegment>());
 			paths.get(v0).get(v1).add(new PathSegment(v1, edge));
+			
+			costs.get(v1).put(v0, edge.getCost());
+			paths.get(v1).put(v0, new Vector<PathSegment>());
+			paths.get(v1).get(v0).add(new PathSegment(v0, edge));
+			
 		}
 		
 		for (Entry<String, Vertex> ei : this.vertices.entrySet()) {
 			Vertex vi = ei.getValue();
 			for (Entry<String, Vertex> ej : this.vertices.entrySet()) {
-				Vertex vj = ei.getValue();
+				Vertex vj = ej.getValue();
 				for (Entry<String, Vertex> ek : this.vertices.entrySet()) {
-					Vertex vk = ei.getValue();
+					Vertex vk = ek.getValue();
+
 					long costij = Integer.MAX_VALUE;
 					long costik = Integer.MAX_VALUE;
 					long costkj = Integer.MAX_VALUE;
-					
-					boolean flag = true;
-					
 					if (costs.get(vi).containsKey(vj)) {
+
 						costij = costs.get(vi).get(vj);
+//						System.out.println(costij);
+
 					}
 					if (costs.get(vi).containsKey(vk)) {
+
 						costik = costs.get(vi).get(vk);
+//						System.out.println(costik);
+
 					}
 					if (costs.get(vk).containsKey(vj)) {
+
 						costkj = costs.get(vk).get(vj);
+//						System.out.println(costkj);
+
 					}
-					
-					
+//					
 					if (costij > costik + costkj) {
+//						System.out.print(costij+" ");
+//						System.out.print(costik+" ");
+//						System.out.print(costkj);
+//						System.out.println("!!!!!!!!!!");
+						
 						costs.get(vi).put(vj, (int)(costik + costkj));
-						
+						costs.get(vj).put(vi, (int)(costik + costkj));
+
 						paths.get(vi).remove(vj);
-						paths.get(vi).put(vj, new Vector<PathSegment>());
-						
+						paths.get(vj).remove(vi);
 						Vector<PathSegment> path = new Vector<PathSegment>();
+						Vector<PathSegment> path2 = new Vector<PathSegment>();
+
+						paths.get(vi).put(vj, path);
+						paths.get(vj).put(vi, path2);
+						
 						for (PathSegment segment : paths.get(vi).get(vk)) {
 							path.add(segment);
 						}
 						for (PathSegment segment : paths.get(vk).get(vj)) {
 							path.add(segment);
+						}
+						for (PathSegment segment : paths.get(vj).get(vk)) {
+							path2.add(segment);
+						}
+						for (PathSegment segment : paths.get(vk).get(vi)) {
+							path2.add(segment);
 						}
 					}
 				}
@@ -577,10 +610,10 @@ public class Graph {
 		g.insertVertex("3", "3", 49, 50);
 		g.insertVertex("4", "4", 49, 49);
 		g.insertVertex("5", "5", 50, 50);
-		g.insertEdge("1", "4", "88", "88", 5);
+		g.insertEdge("1", "4", "88", "88", 88);
 		g.insertEdge("1", "2", "2", "2", 2);
 		g.insertEdge("2", "3", "14", "14", 14);
-		g.insertEdge("2", "4", "99", "99", 5);
+		g.insertEdge("2", "4", "99", "99", 99);
 		g.insertEdge("2", "5", "4", "4", 4);
 		g.insertEdge("4", "5", "58", "58", 58);
 		g.insertEdge("3", "5", "34", "34", 34);
@@ -597,11 +630,21 @@ public class Graph {
 
 		// returns the vertices and edges you have visited
 
-		System.out.println(gVisitor._strResult);
+//		System.out.println(gVisitor._strResult);
 		// wessam
-		// Vertex[] cp= g.closestPair();
-		// for(int i=0;i<cp.length;i++)
-		// System.out.println(cp[i]._strData.toString());
+//		Vector<Vector<PathSegment>> cp= g.findAllShortestPathsFW();
+//		 for(int i=0;i<cp.size();i++) {
+//			 Vector<PathSegment> x= cp.get(i);
+//
+//			 for(int j=0;j<x.size();j++) {
+//				 System.out.print(x.get(j)._edge._strUniqueID.toString()+" ");
+//
+//				 System.out.print(x.get(j)._vertex._strUniqueID.toString()+" ");
+//
+//				 }
+//			 System.out.println();
+//
+//			 }
 		//
 
 		// TESTED BAS MOMKN TOBSO FEH TANI PLEASE <3
